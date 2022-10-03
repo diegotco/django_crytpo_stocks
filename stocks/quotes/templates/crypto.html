@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Add new crypto</h1>
+    <br/>
+
+        <form action = "{% url 'crypto' %}" class="w-25" role="search" method="POST">
+                {% csrf_token %} 
+                <div class="row g-2">
+                    <div class="col-sm">
+                        <input class="form-control me-2" type="search" placeholder="Enter a symbol" aria-label="Search" name="crypto_ticker">
+                    </div>
+                    <div class="col-sm">
+                        <button class="btn btn-outline-success" type="submit">Add Crypto</button>
+                    </div>
+                </div> 
+        </form>
+
+
+    <br/>
+    <br/>
+
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+            <th scope="col">Symbol</th>
+            <th scope="col">Price</th>
+            <th scope="col">Market cap</th>
+            <th scope="col">24H % change</th>
+            <th scope="col">Delete Crypto</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        
+
+            {% if crypto_ticker %}
+               
+
+                {% with dictionary_values=crypto_output  %}
+                    
+                    <!-- {{dictionary_values}}</br></br> -->
+           
+                    {% for a in dictionary_values %}
+                    
+                        <!-- this {{a}}</br></br> -->
+
+                        {% with value2=a  %}
+                        
+                            {% for key in value2.items %}
+                            
+                                <!-- Hola {{key}}</br></br> -->
+
+                                {% if forloop.counter0 is 1 %}
+
+                                    <!-- HolaL {{key.1}}</br></br> -->
+                                    {% with value3=key.1 %}
+                                        <!-- Diego - {{value3.items}}</br></br>  -->
+                                        <tr>
+                                            {% for key4, value4 in value3.items %}
+                                                {% if forloop.counter0 is 0 %}
+                                                <th scope="row">{{value4.0.symbol}}</th>
+                                                    <!-- {{value4.0.quote}}</br></br> -->
+                                                    {% with value7=value4.0.quote %}
+                                                    
+
+                                                            {% for key5, value5 in value7.items %}
+                                                            
+                                                                {% if forloop.counter0 is 0 %}
+
+                                                                <td>${{ value5.price|floatformat:"2g" }}</td>
+                                                                <td>${{ value5.market_cap|floatformat:"2g" }}</td>
+                                                                <td>{{ value5.percent_change_24h|floatformat:"2g"}}%</td>
+                                                                <td>
+                                                                    
+                                                                    {% for x in range %} 
+                                                                      
+                                                                        {% with crypto_item=crypto_str_list|index:x crypto_item2=crypto_ticker|index:x sim=value4.0.symbol %}
+                                        
+                                                                                {% if crypto_item == sim %}
+                                                                                    
+                                                                                    {{crypto_item}} - <a href="{% url 'delete_c' crypto_item2.id %}" <button type="button" class="btn btn-info">Delete Crypto</button></a></br> 
+                                        
+                                                                                {% endif %}  
+                                                                            
+                                                                        {% endwith %}
+                                                             
+                                                                    {% endfor %}        
+                                        
+                                                                </td>
+                                            
+                                                                {% endif %}
+
+
+                                                            {% endfor %}
+                                                
+                                                        
+                                                    {% endwith %}   
+                                                {% endif %}
+                                                
+                                            {% endfor %}
+
+                                        </tr>  
+
+                                    {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                        
+                        {% endwith %}
+                        
+                        {% for key2, value2 in value1.items %}
+                            {{key2}}/{{value2}}</br></br>
+                        {% endfor %}
+                        
+
+                    
+                    
+                    
+                    {% endfor %}
+                    
+                {% endwith %}
+
+            {% endif %}
+            
+
+        </tbody>
+    </table>
+    
+   
+
+
+{% endblock %}
+
